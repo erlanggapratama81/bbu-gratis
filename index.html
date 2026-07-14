@@ -14,6 +14,13 @@
       class="w-full border p-3 rounded mb-4"
       placeholder="Nama Produk: Contoh Skintific"
     />
+    
+    <textarea
+      id="targetMarket"
+      class="w-full border p-3 rounded mb-4"
+      placeholder="Target Market: Contoh Cewek 20-30 tahun yang mau kulit glowing"
+      rows="3"
+    ></textarea>
 
     <button
       onclick="generate()"
@@ -30,24 +37,33 @@
   <script>
     async function generate() {
       const productName = document.getElementById('productName').value;
+      const targetMarket = document.getElementById('targetMarket').value;
       const btn = document.getElementById('btn');
       const loading = document.getElementById('loading');
       const result = document.getElementById('result');
 
       if(!productName) return alert('Isi nama produk dulu');
+      if(!targetMarket) return alert('Isi target market dulu');
 
       btn.disabled = true;
       loading.classList.remove('hidden');
       result.textContent = '';
 
       try {
-        // INI KUNCINYA: kita hit server sendiri, bukan Google langsung
-        // Jadi gak ada API key di sini
         const res = await fetch('/api/generate', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            prompt: `Buatkan 3 ide konten TikTok viral untuk produk ${productName}. Format: Hook, Isi, CTA`
+            prompt: `Buatkan 5 ide konten TikTok viral untuk produk "${productName}" dengan target market "${targetMarket}". 
+            
+            Format untuk setiap ide:
+            IDE KONTEN: [judul]
+            HOOK: [3 detik pertama yang bikin nonton]
+            SCRIPT: [isi konten 15-30 detik]
+            CAPTION: [caption + CTA]
+            HASHTAG: [5 hashtag relevan]
+            
+            Bikin yang relate sama target market & berpotensi FYP`
           })
         });
 
