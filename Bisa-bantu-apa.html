@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>BBU Generator</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50">
+  <div class="max-w-2xl mx-auto p-8">
+    <h1 class="text-3xl font-bold mb-6">BBU Generator Gratis</h1>
+
+    <input
+      id="productName"
+      class="w-full border p-3 rounded mb-4"
+      placeholder="Nama Produk: Contoh Skintific"
+    />
+
+    <button
+      onclick="generate()"
+      id="btn"
+      class="bg-blue-600 text-white px-6 py-3 rounded font-semibold"
+    >
+      Generate Ide Konten
+    </button>
+
+    <div id="loading" class="hidden mt-4">Lagi mikir...</div>
+    <pre id="result" class="mt-4 p-4 bg-white border rounded whitespace-pre-wrap"></pre>
+  </div>
+
+  <script>
+    async function generate() {
+      const productName = document.getElementById('productName').value;
+      const btn = document.getElementById('btn');
+      const loading = document.getElementById('loading');
+      const result = document.getElementById('result');
+
+      if(!productName) return alert('Isi nama produk dulu');
+
+      btn.disabled = true;
+      loading.classList.remove('hidden');
+      result.textContent = '';
+
+      try {
+        // INI KUNCINYA: kita hit server sendiri, bukan Google langsung
+        // Jadi gak ada API key di sini
+        const res = await fetch('/api/generate', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            prompt: `Buatkan 3 ide konten TikTok viral untuk produk ${productName}. Format: Hook, Isi, CTA`
+          })
+        });
+
+        const data = await res.json();
+        result.textContent = data.text || 'Gagal generate';
+
+      } catch (err) {
+        result.textContent = 'Error: ' + err.message;
+      }
+
+      btn.disabled = false;
+      loading.classList.add('hidden');
+    }
+  </script>
+</body>
+</html>
